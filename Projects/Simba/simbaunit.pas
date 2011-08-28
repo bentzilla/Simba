@@ -51,7 +51,7 @@ uses
   SynExportHTML, SynEditKeyCmds, SynEditHighlighter,
   SynEditMarkupHighAll, LMessages, Buttons,
   mmisc, stringutil,mufasatypesutil, mufasabase,
-  about, framefunctionlist, ocr, updateform, Simbasettings, 
+  about, framefunctionlist, ocr, updateform, Simbasettings, accountmanager,
   {$IFDEF USE_EXTENSIONS}psextension, virtualextension, extensionmanager,{$ENDIF}
   settingssandbox,
 
@@ -159,6 +159,7 @@ type
     MenuItemSaveDef: TMenuItem;
     MenuItemBitmapConv: TMenuItem;
     MenuItemExtensions: TMenuItem;
+    MenuItemAccountManagerButton: TMenuItem;
     MenuItemSettingsButton: TMenuItem;
     MenuItemDivider10: TMenuItem;
     MenuTools: TMenuItem;
@@ -346,6 +347,7 @@ type
     procedure MenuItemOpenPluginsFolderClick(Sender: TObject);
     procedure MenuItemOpenScriptsFolderClick(Sender: TObject);
     procedure MenuItemReportBugClick(Sender: TObject);
+    procedure MenuItemAccountManagerButtonClick(Sender: TObject);
     procedure MenuItemSettingsButtonClick(Sender: TObject);
     procedure MenuItemShowClick(Sender: TObject);
     procedure MenuItemTabCloseClick(Sender: TObject);
@@ -2771,6 +2773,12 @@ end;
 procedure TSimbaForm.MenuItemReportBugClick(Sender: TObject);
 begin
   OpenURL('http://bugs.villavu.com/mantis/bug_report_page.php');
+end;
+
+procedure TSimbaForm.MenuItemAccountManagerButtonClick(Sender: TObject);
+begin
+  //accountmanager.AccountForm.ShowModal;
+  AccountForm.ShowModal;
 end;
 
 procedure TSimbaForm.MenuItemSettingsButtonClick(Sender: TObject);

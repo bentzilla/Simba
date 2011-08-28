@@ -135,3 +135,8 @@ function ps_ExtractFileExt(const FileName: string): string; extdecl;
 begin
   result := ExtractFileExt(filename);
 end;
+
+function ps_LoadAccounts(const Salt: String): T2DStringArray; extdecl;
+begin
+  Result := LoadAccounts(Salt);
+end; 

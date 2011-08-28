@@ -56,6 +56,7 @@ AddTypeS('T2DExtendedArray', 'array of array of extended;');
 AddTypeS('T3DExtendedArray','array of array of array of extended;');
 AddTypeS('T2DIntegerArray','array of array of integer;');
 AddTypeS('TStringArray','Array of string;');
+AddTypeS('T2DStringArray','array of array of string;');
 AddTypeS('TMousePress', '(mouse_Down, mouse_Up);');
 AddTypeS('Pointer', 'Integer');
 

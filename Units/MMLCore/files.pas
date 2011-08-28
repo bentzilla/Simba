@@ -67,10 +67,11 @@ type
   function GetFiles(Path, Ext: string): TStringArray;
   function GetDirectories(Path: string): TstringArray;
   function FindFile(filename : string; Dirs : array of string) : string; //Results '' if not found
+  function LoadAccounts(const Salt: String): T2DStringArray;
 
 implementation
 uses
-  {$IFDEF MSWINDOWS}Windows,{$ENDIF} IniFiles,Client,FileUtil;
+  {$IFDEF MSWINDOWS}Windows,{$ENDIF} IniFiles,Client,FileUtil, Forms, DOM, XMLRead, DCPrijndael, DCPsha1, Dialogs;
 
 { GetFiles in independant of the TMFiles class }
 
@@ -130,6 +131,52 @@ begin;
   end;
   result := '';
 end;
+
+function DoDecrypt(Str, Salt: String): String;
+var
+  Cipher: TDCP_rijndael;
+begin
+  Cipher := TDCP_rijndael.Create(nil);
+  Cipher.InitStr(Salt, TDCP_sha1);
+  Result := Cipher.DecryptString(Str);
+  Cipher.Burn;
+  Cipher.Free;
+end;
+
+function LoadAccounts(const Salt: String): T2DStringArray;
+var
+  Doc: TXMLDocument;
+  i, ii: integer;
+  Exists: Boolean;
+  s: String;
+begin
+  try
+    Exists := FileExists(ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+
+    // Load Document
+    if (not (Exists)) then
+      Exit
+    else
+      ReadXMLFile(Doc, ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+
+    SetLength(Result, Doc.DocumentElement.ChildNodes.Count);
+
+    // Load Accounts into Array
+    for i := 0 to (Doc.DocumentElement.ChildNodes.Count - 1) do
+    begin
+        //SetLength(Result, Length(Result) + 1);
+      SetLength(Result[i], 6);
+      for ii := 0 to 5 do
+        if ((ii = 1) or (ii = 3)) then
+          Result[i][ii] := DoDecrypt(Doc.DocumentElement.ChildNodes.Item[i].ChildNodes.Item[ii].TextContent, Salt)
+        else
+          Result[i][ii] := (Doc.DocumentElement.ChildNodes.Item[i].ChildNodes.Item[ii].TextContent);
+    end;
+  finally
+    if (Exists) then
+      Doc.Free;
+  end;
+end; 
 
 constructor TMFiles.Create(Owner : TObject);
 begin

@@ -1,0 +1,182 @@
+object AccountForm: TAccountForm
+  Left = 1312
+  Height = 148
+  Top = 193
+  Width = 564
+  BorderStyle = bsSingle
+  Caption = 'AccountForm'
+  ClientHeight = 148
+  ClientWidth = 564
+  OnShow = FormShow
+  LCLVersion = '0.9.30'
+  object BOX_USER: TLabeledEdit
+    Left = 248
+    Height = 23
+    Top = 24
+    Width = 100
+    EditLabel.AnchorSideLeft.Control = BOX_USER
+    EditLabel.AnchorSideBottom.Control = BOX_USER
+    EditLabel.Left = 248
+    EditLabel.Height = 16
+    EditLabel.Top = 5
+    EditLabel.Width = 57
+    EditLabel.Caption = 'Username:'
+    EditLabel.ParentColor = False
+    EditLabel.Layout = tlCenter
+    Enabled = False
+    TabOrder = 0
+    OnChange = BOX_USERChange
+  end
+  object BOX_PASS: TLabeledEdit
+    Left = 352
+    Height = 23
+    Top = 24
+    Width = 100
+    EchoMode = emPassword
+    EditLabel.AnchorSideLeft.Control = BOX_PASS
+    EditLabel.AnchorSideBottom.Control = BOX_PASS
+    EditLabel.Left = 352
+    EditLabel.Height = 16
+    EditLabel.Top = 5
+    EditLabel.Width = 54
+    EditLabel.Caption = 'Password:'
+    EditLabel.ParentColor = False
+    EditLabel.Layout = tlCenter
+    Enabled = False
+    PasswordChar = '*'
+    TabOrder = 1
+  end
+  object BOX_PIN: TLabeledEdit
+    Left = 456
+    Height = 23
+    Top = 24
+    Width = 100
+    EchoMode = emPassword
+    EditLabel.AnchorSideLeft.Control = BOX_PIN
+    EditLabel.AnchorSideBottom.Control = BOX_PIN
+    EditLabel.Left = 456
+    EditLabel.Height = 16
+    EditLabel.Top = 5
+    EditLabel.Width = 23
+    EditLabel.Caption = 'PIN:'
+    EditLabel.ParentColor = False
+    EditLabel.Layout = tlCenter
+    Enabled = False
+    MaxLength = 4
+    PasswordChar = '*'
+    TabOrder = 2
+    OnKeyPress = BOX_PINKeyPress
+  end
+  object CHECKBOX_MEMBERS: TCheckBox
+    Left = 353
+    Height = 19
+    Top = 76
+    Width = 78
+    Caption = 'Members ?'
+    Enabled = False
+    TabOrder = 4
+  end
+  object BOX_NICK: TLabeledEdit
+    Left = 248
+    Height = 23
+    Top = 72
+    Width = 100
+    EditLabel.AnchorSideLeft.Control = BOX_NICK
+    EditLabel.AnchorSideBottom.Control = BOX_NICK
+    EditLabel.Left = 248
+    EditLabel.Height = 16
+    EditLabel.Top = 53
+    EditLabel.Width = 58
+    EditLabel.Caption = 'Nickname:'
+    EditLabel.ParentColor = False
+    EditLabel.Layout = tlCenter
+    Enabled = False
+    TabOrder = 3
+  end
+  object CHECKBOX_ACTIVE: TCheckBox
+    Left = 456
+    Height = 19
+    Top = 72
+    Width = 61
+    Caption = 'Active ?'
+    Enabled = False
+    TabOrder = 5
+  end
+  object BUTTON_ADD: TButton
+    Left = 8
+    Height = 30
+    Top = 112
+    Width = 73
+    Caption = 'Add'
+    OnClick = BUTTON_ADDClick
+    TabOrder = 6
+  end
+  object BUTTON_DELETE: TButton
+    Left = 88
+    Height = 30
+    Top = 112
+    Width = 73
+    Caption = 'Delete'
+    Enabled = False
+    OnClick = BUTTON_DELETEClick
+    TabOrder = 7
+  end
+  object BUTTON_SAVE: TButton
+    Left = 168
+    Height = 30
+    Top = 112
+    Width = 73
+    Caption = 'Save'
+    Enabled = False
+    OnClick = BUTTON_SAVEClick
+    TabOrder = 8
+  end
+  object LIST_ACCOUNTS: TListBox
+    Left = 8
+    Height = 98
+    Top = 8
+    Width = 234
+    ItemHeight = 0
+    OnSelectionChange = LIST_ACCOUNTSSelectionChange
+    TabOrder = 9
+  end
+  object BOX_ENCRYPT: TLabeledEdit
+    Left = 416
+    Height = 23
+    Top = 112
+    Width = 140
+    EditLabel.AnchorSideLeft.Control = BOX_ENCRYPT
+    EditLabel.AnchorSideTop.Control = BOX_ENCRYPT
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = BOX_ENCRYPT
+    EditLabel.AnchorSideBottom.Control = BOX_ENCRYPT
+    EditLabel.Left = 253
+    EditLabel.Height = 31
+    EditLabel.Top = 108
+    EditLabel.Width = 160
+    EditLabel.Caption = 'Encryption Salt'#13#10'(Required for Saving/Loading)'
+    EditLabel.ParentColor = False
+    EditLabel.Layout = tlCenter
+    Enabled = False
+    LabelPosition = lpLeft
+    TabOrder = 10
+  end
+  object CHECKBOX_PASS: TCheckBox
+    Left = 352
+    Height = 19
+    Top = 48
+    Width = 79
+    Caption = 'Plain Text ?'
+    OnChange = CHECKBOX_PASSChange
+    TabOrder = 11
+  end
+  object CHECKBOX_PIN: TCheckBox
+    Left = 456
+    Height = 19
+    Top = 48
+    Width = 79
+    Caption = 'Plain Text ?'
+    OnChange = CHECKBOX_PINChange
+    TabOrder = 12
+  end
+end

@@ -160,6 +160,7 @@ AddFunction(@ps_WriteINI,'procedure WriteINI(const Section, KeyName, NewString, 
 AddFunction(@ps_ReadINI,'function ReadINI(const Section, KeyName, FileName: string): string;');
 AddFunction(@ps_DeleteINI,'procedure DeleteINI(const Section, KeyName, FileName: string);');
 AddFunction(@ps_ExtractFileExt,'function ExtractFileExt(const FileName: string): string;');
+AddFunction(@ps_LoadAccounts,'function LoadAccounts(const Salt: String): T2DStringArray;');
 
 {other}
 SetCurrSection('Other');
