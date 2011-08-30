@@ -2777,7 +2777,7 @@ end;
 
 procedure TSimbaForm.MenuItemAccountManagerButtonClick(Sender: TObject);
 begin
-  //accountmanager.AccountForm.ShowModal;
+  Application.CreateForm(TAccountForm, AccountForm);
   AccountForm.ShowModal;
 end;
 

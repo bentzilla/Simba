@@ -4,9 +4,11 @@ object AccountForm: TAccountForm
   Top = 193
   Width = 564
   BorderStyle = bsSingle
-  Caption = 'AccountForm'
+  Caption = 'Account Manager'
   ClientHeight = 148
   ClientWidth = 564
+  OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '0.9.30'
   object BOX_USER: TLabeledEdit
@@ -96,7 +98,7 @@ object AccountForm: TAccountForm
   object CHECKBOX_ACTIVE: TCheckBox
     Left = 456
     Height = 19
-    Top = 72
+    Top = 76
     Width = 61
     Caption = 'Active ?'
     Enabled = False

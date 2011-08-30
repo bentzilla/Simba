@@ -35,8 +35,10 @@ type
     procedure BUTTON_SAVEClick(Sender: TObject);
     procedure CHECKBOX_PASSChange(Sender: TObject);
     procedure CHECKBOX_PINChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure LIST_ACCOUNTSSelectionChange(Sender: TObject; User: boolean);
+    procedure LIST_ACCOUNTSSelectionChange(Sender: TObject);
     function LIST_ACCOUNTSReturnSelectedIndex: Integer;
   private
     { private declarations }
@@ -46,13 +48,16 @@ type
 
 var
   AccountForm: TAccountForm;
+  FileName: String;
 
 implementation
 
-//{$R *.lfm}
-//uses LCLtype;
-
 { TAccountForm }
+
+procedure TAccountForm.FormCreate(Sender: TObject);
+begin
+  FileName := ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml';
+end;
 
 procedure TAccountForm.FormShow(Sender: TObject);
 var
@@ -62,18 +67,18 @@ var
   s: String;
 begin
   try
-    if InputQuery('Salt', 'Enter Salt', s) then
+    if InputQuery('Salt', 'Enter Salt (Encryption Key of your choice)', s) then
       AccountForm.BOX_ENCRYPT.Text := s
     else
       AccountForm.BOX_ENCRYPT.Text := 'SALT';
 
-    Exists := FileExists(ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+    Exists := FileExists(FileName);
 
     // Load Document
     if (not (Exists)) then
       Exit
     else
-      ReadXMLFile(Doc, ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+      ReadXMLFile(Doc, FileName);
 
     // Load Accounts into List
     for i := 0 to (Doc.DocumentElement.ChildNodes.Count - 1) do
@@ -130,20 +135,19 @@ begin
       LIST_ACCOUNTS.Items.Strings[i] := BOX_USER.Text;
 end;
 
-procedure TAccountForm.LIST_ACCOUNTSSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TAccountForm.LIST_ACCOUNTSSelectionChange(Sender: TObject);
 var
   Doc: TXMLDocument;
   Exists: Boolean;
 begin
   try
-    Exists := FileExists(ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+    Exists := FileExists(FileName);
 
     // Load Document
     if (not (Exists)) then
       Exit
     else
-      ReadXMLFile(Doc, ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+      ReadXMLFile(Doc, FileName);
 
     // New Account
     if (Doc.DocumentElement.ChildNodes.Item[LIST_ACCOUNTSReturnSelectedIndex] = nil) then
@@ -174,7 +178,6 @@ begin
 
     BUTTON_DELETE.Enabled := True;
     BUTTON_SAVE.Enabled := True;
-    //_________
     BOX_USER.Enabled := True;
     BOX_PASS.Enabled := True;
     BOX_NICK.Enabled := True;
@@ -195,10 +198,8 @@ var
   RootNode, ElementNode: TDOMNode;
   i, d: integer;
   Exists: Boolean;
-  FileName: String;
 begin
   try
-    FileName := ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml';
     Exists := FileExists(FileName);
     d := LIST_ACCOUNTSReturnSelectedIndex;
 
@@ -235,7 +236,6 @@ begin
 
     BUTTON_DELETE.Enabled := False;
     BUTTON_SAVE.Enabled := False;
-    //___
     BOX_USER.Enabled := False;
     BOX_PASS.Enabled := False;
     BOX_NICK.Enabled := False;
@@ -245,7 +245,13 @@ begin
   end;
 end;
 
-procedure SaveToFile(const FileName: string);
+procedure AddItem(iNode, tNode: TDOMNode; var eNode: TDOMNode);
+begin
+    iNode.AppendChild(tNode);
+    eNode.AppendChild(iNode);
+end;
+
+procedure SaveToFile(const _FileName: String);
 var
   Doc: TXMLDocument;
   RootNode, ElementNode, OldElementNode, ItemNode, TextNode: TDOMNode;
@@ -253,7 +259,7 @@ var
   Exists: Boolean;
 begin
   try
-    Exists := FileExists(FileName);
+    Exists := FileExists(_FileName);
     i := AccountForm.LIST_ACCOUNTSReturnSelectedIndex;
 
     // Read/Create Document
@@ -265,7 +271,7 @@ begin
       RootNode := Doc.CreateElement('Accounts');
       Doc.Appendchild(RootNode);
     end else
-      ReadXMLFile(Doc, FileName);
+      ReadXMLFile(Doc, _FileName);
 
     // Root node
     RootNode := Doc.DocumentElement;
@@ -277,37 +283,12 @@ begin
     ElementNode := Doc.CreateElement('Account');
     TDOMElement(ElementNode).SetAttribute('id', IntToStr(i));
 
-    ItemNode := Doc.CreateElement('Username');
-    TextNode := Doc.CreateTextNode(AccountForm.BOX_USER.Text);
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    ItemNode := Doc.CreateElement('Password');
-    TextNode := Doc.CreateTextNode(DoEncrypt(AccountForm.BOX_PASS.Text, AccountForm.BOX_ENCRYPT.Text));
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    ItemNode := Doc.CreateElement('Nickname');
-    TextNode := Doc.CreateTextNode(AccountForm.BOX_NICK.Text);
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    ItemNode := Doc.CreateElement('PIN');
-    TextNode := Doc.CreateTextNode(DoEncrypt(AccountForm.BOX_PIN.Text, AccountForm.BOX_ENCRYPT.Text));
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    ItemNode := Doc.CreateElement('Members');
-    TextNode := Doc.CreateTextNode(BoolToStr(AccountForm.CHECKBOX_MEMBERS.Checked, 'True', 'False'));
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    ItemNode := Doc.CreateElement('Active');
-    TextNode := Doc.CreateTextNode(BoolToStr(AccountForm.CHECKBOX_ACTIVE.Checked, 'True', 'False'));
-    ItemNode.AppendChild(TextNode);
-    ElementNode.AppendChild(ItemNode);
-
-    //MessageDlg(BoolToStr((OldElementNode = nil), 'T', 'F'),mtError, mbOKCancel, 0);
+    AddItem(Doc.CreateElement('Username'), Doc.CreateTextNode(AccountForm.BOX_USER.Text), ElementNode);
+    AddItem(Doc.CreateElement('Password'), Doc.CreateTextNode(DoEncrypt(AccountForm.BOX_PASS.Text, AccountForm.BOX_ENCRYPT.Text)), ElementNode);
+    AddItem(Doc.CreateElement('Nickname'), Doc.CreateTextNode(AccountForm.BOX_NICK.Text), ElementNode);
+    AddItem(Doc.CreateElement('PIN'), Doc.CreateTextNode(DoEncrypt(AccountForm.BOX_PIN.Text, AccountForm.BOX_ENCRYPT.Text)), ElementNode);
+    AddItem(Doc.CreateElement('Members'), Doc.CreateTextNode(BoolToStr(AccountForm.CHECKBOX_MEMBERS.Checked, 'True', 'False')), ElementNode);
+    AddItem(Doc.CreateElement('Active'), Doc.CreateTextNode(BoolToStr(AccountForm.CHECKBOX_ACTIVE.Checked, 'True', 'False')), ElementNode);
 
     if ((OldElementNode = nil) or (not (Exists))) then
       RootNode.AppendChild(ElementNode)
@@ -315,7 +296,7 @@ begin
       RootNode.ReplaceChild(ElementNode, OldElementNode);
 
     // Save XML
-    WriteXMLFile(Doc, FileName);
+    WriteXMLFile(Doc, _FileName);
 
   finally
     if (Exists) then
@@ -327,7 +308,7 @@ procedure TAccountForm.BUTTON_SAVEClick(Sender: TObject);
 begin
   if not DirectoryExists(ExtractFileDir(Application.ExeName)) then
     CreateDir(ExtractFileDir(Application.ExeName));
-  SaveToFile(ExtractFileDir(Application.ExeName) + DirectorySeparator + 'accounts.xml');
+  SaveToFile(FileName);
 end;
 
 procedure TAccountForm.CHECKBOX_PASSChange(Sender: TObject);
@@ -346,6 +327,11 @@ begin
   else
     BOX_PIN.EchoMode := emPassword;
   AccountForm.Refresh;
+end;
+
+procedure TAccountForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
 end;
 
 initialization

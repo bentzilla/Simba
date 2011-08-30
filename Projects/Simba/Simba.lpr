@@ -50,7 +50,7 @@ begin
   Application.CreateForm(TDebugImgForm, DebugImgForm);
 //  Application.CreateForm(TExtensionsForm, ExtensionsForm);
   Application.CreateForm(TBitmapConvForm, BitmapConvForm);
-  Application.CreateForm(TAccountForm, AccountForm);
+//  Application.CreateForm(TAccountForm, AccountForm);
 //  Application.CreateForm(TSimbaUpdateForm, SimbaUpdateForm);
 //  Application.CreateForm(TSettingsForm, SettingsForm); Done in FormCreate of MainForm
   Application.Run;
